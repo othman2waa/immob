@@ -31,10 +31,16 @@ Playwright démarre son propre serveur de production après le build et teste le
 
 ## Périmètre
 
-Le socle de phase 1 fournit la configuration, le modèle de données, une page multilingue lisant la base et l’infrastructure de tests. Le catalogue complet, le design premium, l’authentification, l’administration, les leads et les services externes arrivent dans les phases suivantes. Les polices et médias définitifs ne sont pas encore intégrés.
+Le socle de phase 1 fournit la configuration, le modèle de données, une page multilingue lisant la base et l’infrastructure de tests. L’évolution visuelle ajoute les photographies locales, la typographie Atlas, des animations au défilement et une maquette WebGL interactive. Le catalogue filtrable et les pages projet complètes restent à développer. Authentification, administration, leads et services externes arrivent dans les phases suivantes. Les photographies actuelles et la maquette sont illustratives ; les médias des projets réels seront intégrés avec leurs droits d’usage.
 
 Les secrets de production ne doivent jamais être écrits dans Git ou le chat. `.env.example` documente les paramètres locaux ; les futurs fournisseurs sont décrits dans ARCHITECTURE.md. Voir [CLAUDE.md](CLAUDE.md) pour les conventions et le contrat de livraison.
 
 ## Validation de la phase 1
 
 Installation réexécutée, migrations/seed idempotents et absence de dérive du schéma vérifiés. Lint, typecheck et build production réussis ; 11 tests unitaires, 4 tests PostgreSQL et 10 tests navigateur desktop/mobile passent. Le développement répond dans les trois langues. GitHub Actions est configuré ; son exécution distante n’a pas encore été vérifiée.
+
+## Expérience visuelle et 3D
+
+Les sources des photographies et licences de polices sont documentées dans [MEDIA.md](docs/MEDIA.md). Three.js charge uniquement quand l’exploration approche du viewport ; aucun modèle ou texture externe n’est nécessaire. Les animations et la rotation automatique respectent le mouvement réduit, et le modèle laisse passer le défilement tactile vertical.
+
+Playwright utilise un serveur de production dédié au port 3100. Pour les machines CI/cloud sans GPU physique, activez `PLAYWRIGHT_USE_SOFTWARE_GL=1` en plus du chemin Chromium lorsque nécessaire. Cette option concerne les tests uniquement. La suite complète compte désormais 22 tests navigateur, en plus des 11 unitaires et 4 d’intégration.

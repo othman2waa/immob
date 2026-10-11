@@ -1,6 +1,6 @@
 # Roadmap — plateforme immobilière
 
-Statut : phase 1 livrée après autorisation de démarrer ; phase 2 en attente du feu vert. Chaque phase attend le feu vert après livraison. Interface en français, code et commentaires en anglais ; traductions anglaises et arabes accompagnent les routes publiques.
+Statut : phase 1 livrée ; évolution visuelle de phase 2 autorisée et livrée. Le catalogue complet reste à réaliser après le prochain feu vert. Chaque phase attend le feu vert après livraison. Interface en français, code et commentaires en anglais ; traductions anglaises et arabes accompagnent les routes publiques.
 
 ## Contrat de livraison
 
@@ -65,4 +65,16 @@ Phase 1 implémentée : conventions CLAUDE.md, stack épinglée, schéma Prisma 
 
 Vérifications effectuées dans l’instance cloud : installation à lockfile figé et réinstallation, schéma Prisma valide, migrations appliquées puis réappliquées sans modification, absence de différence entre base et schéma, seed répété sans duplication et préservation d’une édition, lint, typecheck, build production, 11 tests unitaires, 4 tests d’intégration et 10 tests Playwright desktop/mobile. Aucun test ignoré. Démarrage de développement et requêtes HTTP multilingues vérifiés. CI définie ; son exécution distante n’est pas encore attestée.
 
-Le moteur des migrations exige binaries.prisma.sh, désormais accessible. Aucun fournisseur externe ni compte réel requis pour cette phase. Design final, catalogue filtrable, Auth.js/RBAC, administration, CRM, R2 et Resend restent à implémenter dans leurs phases ; Lighthouse n’est pas encore mesuré. Prochaine action : feu vert pour la phase 2, avec confirmation ou ajustement de la direction Atlas proposée.
+Le moteur des migrations exige binaries.prisma.sh, désormais accessible. Aucun fournisseur externe ni compte réel requis pour cette phase. Design final, catalogue filtrable, Auth.js/RBAC, administration, CRM, R2 et Resend restent à implémenter dans leurs phases ; Lighthouse n’est pas encore mesuré. La présentation Atlas et l’expérience 3D sont désormais enrichies dans le lot décrit ci-dessous. Prochaine action : feu vert pour compléter le catalogue public de phase 2.
+
+## Évolution visuelle de phase 2 — photos, WebGL et animations
+
+Demande autorisée : ajouter des photos, des mouvements 3D et des animations au défilement. Choix utilisateur explicite : scène WebGL immersive.
+
+- Accueil Atlas : Manrope/Cormorant Garamond/Noto Sans Arabic auto-hébergées, visuel de villa, cartes photographiques, section vision et appels à explorer.
+- Huit visuels WebP locaux ; optimisation next/image, hero préchargé, autres images différées. Sources et licences dans MEDIA.md.
+- Maquette Three.js originale, rotation/zoom/reset/pause accessibles, chargement près du viewport et arrêt hors écran.
+- Révélation au défilement, parallaxe et inclinaison des cartes ; préférence de mouvement réduit respectée. Photographies et contenu utilisables sans JavaScript, repli si WebGL est indisponible.
+- Validation : lint, typecheck, build production, 11 tests unitaires, 4 tests PostgreSQL et 22 tests navigateur desktop/mobile ; tests sur les formats d’images, interactions 3D, absence WebGL/JavaScript et défilement tactile. Aucun test ignoré.
+
+Ce lot couvre la présentation visuelle demandée. La phase 2 complète nécessite encore catalogue filtrable/tri/pagination, pages projet détaillées, galerie vidéo, carte, équipements, plans, tableau des lots et brochures. Auth/RBAC et back-office restent en phase 3. Le seuil Lighthouse > 90 reste à mesurer selon le protocole de phase 5.

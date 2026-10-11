@@ -511,3 +511,11 @@ Destinations réseau : registre npm, hébergement GitHub, hôte PostgreSQL chois
 5. Afficher les prix exacts par lot, uniquement les prix « à partir de », ou les masquer sur demande ?
 
 Les textes légaux définitifs, domaine, coordonnées, contenus réels et autorisations de médias seront nécessaires avant production, sans empêcher le développement sur données fictives. Les options recommandées sont des propositions explicites en attente de validation.
+
+## Évolution visuelle implémentée
+
+L’accueil Atlas dispose de photographies WebP locales optimisées par next/image et de polices auto-hébergées. Le lien slug → photo de démonstration est isolé dans features/projects/photos.ts ; les futurs médias gérés dans le back-office remplaceront cette source d’inspiration. Aucun fichier média ni prix n’a été ajouté ou modifié dans la base par ce lot.
+
+Choix utilisateur : scène WebGL immersive, implémentée avec Three.js et OrbitControls dans une frontière client chargée près du viewport. Une maquette procédurale évite toute dépendance à des modèles externes ; elle reste indépendante du stock de lots. Rotation, zoom, pause et réinitialisation sont accessibles au clavier, avec défilement vertical tactile conservé. Les animations de révélation/parallaxe/inclinaison et la rotation automatique s’arrêtent avec prefers-reduced-motion. Les détails, licences et limites de rendu figurent dans MEDIA.md.
+
+Les tests navigateur ont leur serveur de production sur le port 3100, distinct du serveur de développement. SwiftShader est activable uniquement dans les tests des machines sans GPU. Les fonctionnalités restantes du catalogue et des pages projet suivent la roadmap.

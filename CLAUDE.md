@@ -35,7 +35,7 @@ Node is pinned in .node-version/.nvmrc; pnpm is pinned in package.json. Run from
 - `pnpm db:seed`: additive, idempotent fictitious data; requires explicit ALLOW_DEMO_SEED=true and an allowlisted non-production database name.
 - `pnpm lint`, `pnpm typecheck`, `pnpm test`: lint, TypeScript, unit suite.
 - `pnpm test:integration`: database constraints and seed repeatability against the configured demo/test database.
-- `pnpm build`, `pnpm test:e2e`: production build and browser smoke tests; PostgreSQL must be running and seeded.
+- `pnpm build`, `pnpm test:e2e`: production build and browser checks on a dedicated port 3100; PostgreSQL must be running and seeded. Use PLAYWRIGHT_USE_SOFTWARE_GL=1 on GPU-less CI/cloud machines.
 - `pnpm start`: production server after building.
 
 ## Data and configuration
@@ -46,3 +46,9 @@ Node is pinned in .node-version/.nvmrc; pnpm is pinned in package.json. Run from
 - Schema changes need a reviewed migration. Production uses migrate deploy, never db push/reset.
 - SQL constraints complement application validation; test both acceptance and rejection.
 - Cloud credentials must be supplied through secure environment settings after checking existing bindings. Never ask for secret values in chat.
+
+## Visuals and motion
+
+- Inspiration photographs are local WebP files, documented in docs/MEDIA.md; never imply that they depict real listings.
+- Three.js is lazy-loaded near the viewer. Keep the render loop paused off-screen/in hidden tabs, cap pixel ratio, and dispose GPU resources on unmount.
+- Respect prefers-reduced-motion and preserve keyboard controls and vertical touch scrolling. Content and photographs must remain readable without JavaScript; WebGL gets a photographic fallback.

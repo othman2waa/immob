@@ -37,7 +37,13 @@ describe('demo safety', () => {
     expect(() => assertDemoDatabase({...env, DATABASE_URL: 'postgresql://localhost/customer_data'})).toThrow();
   });
   it('has complete interface message keys in every locale', () => {
-    expect(Object.keys(en.Home).sort()).toEqual(Object.keys(fr.Home).sort());
-    expect(Object.keys(ar.Home).sort()).toEqual(Object.keys(fr.Home).sort());
+    function messageKeys(value: Record<string, unknown>, prefix = ''): string[] {
+      return Object.entries(value).flatMap(([key, child]) => {
+        const path = prefix ? `${prefix}.${key}` : key;
+        return typeof child === 'object' && child !== null ? messageKeys(child as Record<string, unknown>, path) : [path];
+      }).sort();
+    }
+    expect(messageKeys(en.Home)).toEqual(messageKeys(fr.Home));
+    expect(messageKeys(ar.Home)).toEqual(messageKeys(fr.Home));
   });
 });
