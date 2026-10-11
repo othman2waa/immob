@@ -24,6 +24,16 @@ NODE_ENV=development ALLOW_DEMO_SEED=true pnpm db:seed
 
 `migrate deploy` applique les migrations versionnées sans réinitialisation. Le seed ajoute uniquement les enregistrements absents ; il refuse un environnement `production`, l’absence du consentement `ALLOW_DEMO_SEED=true` et les noms de bases autres que `immob_dev`/`immob_test`. Après vérification des 6 projets et 40 lots, ne pas activer le seed dans Vercel.
 
+Si l’atelier cloud ne permet pas une connexion PostgreSQL directe, l’initialisation peut s’exécuter dans un **premier build Vercel ponctuel**, sur une ressource Neon dédiée déjà créée avec l’offre gratuite. Le script `scripts/prepare-cloud-demo.mjs` exige une autorisation explicite et vérifie que les trois connexions correspondent au même hôte Neon, au même rôle et à la base `immob_dev`. La connexion de création `DEMO_DATABASE_URL_UNPOOLED`, fournie par l’intégration, doit viser `neondb` sur cette même ressource. Il crée `immob_dev` seulement si elle est absente, puis exécute les migrations et le seed additif.
+
+Commande de ce premier build uniquement :
+
+```sh
+pnpm db:generate && ALLOW_DEMO_SEED=true pnpm exec tsx scripts/prepare-cloud-demo.mjs && pnpm build
+```
+
+`ALLOW_DEMO_SEED` concerne cette commande de build ; il n’est pas ajouté aux variables de l’application. Rétablir ensuite la commande normale de `vercel.json`. Les builds suivants ne lancent ni migrations ni seed. Les secrets restent dans les variables chiffrées Vercel ; le script ne les affiche pas.
+
 ## Déployer
 
 Le fichier `vercel.json` définit le framework, l’installation à lockfile figé et le build `pnpm db:generate && pnpm build`. La génération Prisma fait partie du build pour éviter un client périmé dans le cache Vercel. Les migrations et le seed s’exécutent séparément, avant le premier déploiement.
