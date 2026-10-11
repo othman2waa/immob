@@ -44,3 +44,7 @@ Installation réexécutée, migrations/seed idempotents et absence de dérive du
 Les sources des photographies et licences de polices sont documentées dans [MEDIA.md](docs/MEDIA.md). Three.js charge uniquement quand l’exploration approche du viewport ; aucun modèle ou texture externe n’est nécessaire. Les animations et la rotation automatique respectent le mouvement réduit, et le modèle laisse passer le défilement tactile vertical.
 
 Playwright utilise un serveur de production dédié au port 3100. Pour les machines CI/cloud sans GPU physique, activez `PLAYWRIGHT_USE_SOFTWARE_GL=1` en plus du chemin Chromium lorsque nécessaire. Cette option concerne les tests uniquement. La suite complète compte désormais 22 tests navigateur, en plus des 11 unitaires et 4 d’intégration.
+
+## Hébergement de la démo
+
+La cible retenue est **Vercel avec PostgreSQL**. Voir [DEPLOYMENT.md](docs/DEPLOYMENT.md) pour les accès sécurisés, la préparation de la base dédiée et les vérifications de l’URL publique. `vercel.json` génère Prisma avant le build ; les migrations et le seed restent des étapes séparées.
