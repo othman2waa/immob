@@ -1,19 +1,19 @@
 # Roadmap — plateforme immobilière
 
-Statut : proposition, aucune phase de code démarrée. Chaque phase attend le feu vert après livraison. Interface en français, code et commentaires en anglais ; traductions anglaises et arabes accompagnent les routes publiques.
+Statut : phase 1 livrée après autorisation de démarrer ; phase 2 en attente du feu vert. Chaque phase attend le feu vert après livraison. Interface en français, code et commentaires en anglais ; traductions anglaises et arabes accompagnent les routes publiques.
 
 ## Contrat de livraison
 
-À la fin de chaque phase de développement : lint, typecheck et tests pertinents réellement exécutés, résultats distinguant échecs/skips ; commit Conventional Commits ; résumé des changements et du restant ; arrêt jusqu’au feu vert. Un échec n’est pas masqué par un test trivial. Les commandes seront créées en phase 1 et documentées dans CLAUDE.md. Aucun commit ni installation à l’étape de proposition actuelle.
+À la fin de chaque phase de développement : lint, typecheck et tests pertinents réellement exécutés, résultats distinguant échecs/skips ; commit Conventional Commits ; résumé des changements et du restant ; arrêt jusqu’au feu vert. Un échec n’est pas masqué par un test trivial. Les commandes seront créées en phase 1 et documentées dans CLAUDE.md. La phase de conception initiale n’a comporté aucune installation. La phase 1 dispose désormais de ses commandes et vérifications.
 
 ## Phase 0 — conception (étape actuelle)
 
 - ARCHITECTURE.md : modules, routes, Prisma, flux, permissions, sécurité, alternatives, deux directions visuelles.
 - ROADMAP.md : périmètre, dépendances et critères d’acceptation.
 - Réponses aux cinq points de validation puis accord explicite.
-- CLAUDE.md sera créé à l’étape 2, après validation et avant le code applicatif.
+- CLAUDE.md créé après l’autorisation de démarrer, avant le code applicatif.
 
-## Phase 1 — socle et environnement reproductible
+## Phase 1 — socle et environnement reproductible (livrée)
 
 - Next.js App Router, TypeScript strict, pnpm/version Node épinglés, Tailwind, shadcn/ui.
 - CLAUDE.md : stack, structure, conventions, scripts, RBAC, secrets, règles de migration et checkpoints.
@@ -61,4 +61,8 @@ Multi-promoteurs avec isolation complète, paiements/réservations en ligne, por
 
 ## Situation actuelle
 
-Deux documents de conception créés uniquement. Pas d’application, de dépendances installées, de base, de configuration cloud sauvegardée ou de checks applicatifs exécutables. L’accès Git distant en lecture fonctionne, mais aucune référence main/HEAD n’a été retournée ; le checkout reste sur la branche locale work sans commits. Prochaine action : validation de la phase 0, puis CLAUDE.md et socle.
+Phase 1 implémentée : conventions CLAUDE.md, stack épinglée, schéma Prisma complet et migration SQL avec contraintes, PostgreSQL Docker, seed additif (3 villes / 6 projets / 40 lots), messages FR/EN/AR, page de socle lisant PostgreSQL et switch de langue/RTL, composant Button compatible shadcn/ui, tests et workflow CI.
+
+Vérifications effectuées dans l’instance cloud : installation à lockfile figé et réinstallation, schéma Prisma valide, migrations appliquées puis réappliquées sans modification, absence de différence entre base et schéma, seed répété sans duplication et préservation d’une édition, lint, typecheck, build production, 11 tests unitaires, 4 tests d’intégration et 10 tests Playwright desktop/mobile. Aucun test ignoré. Démarrage de développement et requêtes HTTP multilingues vérifiés. CI définie ; son exécution distante n’est pas encore attestée.
+
+Le moteur des migrations exige binaries.prisma.sh, désormais accessible. Aucun fournisseur externe ni compte réel requis pour cette phase. Design final, catalogue filtrable, Auth.js/RBAC, administration, CRM, R2 et Resend restent à implémenter dans leurs phases ; Lighthouse n’est pas encore mesuré. Prochaine action : feu vert pour la phase 2, avec confirmation ou ajustement de la direction Atlas proposée.

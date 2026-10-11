@@ -1,0 +1,19 @@
+name: immob-dev
+services:
+  db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_USER: immob
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run node scripts/init-env.mjs first}
+      POSTGRES_DB: immob_dev
+    ports:
+      - '127.0.0.1:5433:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U immob -d immob_dev']
+      interval: 2s
+      timeout: 5s
+      retries: 20
+volumes:
+  postgres-data:

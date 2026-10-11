@@ -1,0 +1,19 @@
+packages:
+  - .
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  prisma: true
+  esbuild: true
+  sharp: true
+  "@parcel/watcher": true
+  "@swc/core": true
+  unrs-resolver: true
+storeDir: .pnpm-store
+cacheDir: .cache/pnpm
+minimumReleaseAgeExclude:
+  - react-hook-form@7.90.0
+  - zod@4.6.6
+
+overrides:
+  '@swc/core': npm:@swc/wasm@1.16.13

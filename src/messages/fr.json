@@ -1,0 +1,19 @@
+{
+  "Home": {
+    "eyebrow": "Immobilier neuf · Maroc",
+    "title": "Des lieux pour votre avenir.",
+    "description": "Une première sélection de programmes résidentiels, de commerces et de terrains à Marrakech, Casablanca et Rabat.",
+    "demo": "Données fictives de démonstration. Aucun bien présenté ne constitue une offre commerciale réelle.",
+    "cities": "Villes",
+    "projects": "Projets",
+    "units": "Lots",
+    "collection": "Nos projets de démonstration",
+    "from": "À partir de {price}",
+    "onRequest": "Prix sur demande",
+    "untranslated": "Traduction à compléter",
+    "home": "Accueil Immob",
+    "languages": "Choisir la langue",
+    "skip": "Aller au contenu",
+    "footer": "Immob · Plateforme en développement"
+  }
+}

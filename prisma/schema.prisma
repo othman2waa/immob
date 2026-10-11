@@ -1,0 +1,361 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "client"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+enum Role {
+  ADMIN
+  EDITOR
+  SALES
+}
+enum Locale {
+  fr
+  en
+  ar
+}
+enum ProjectStatus {
+  IN_PROGRESS
+  DELIVERED
+  COMING_SOON
+  SOLD_OUT
+}
+enum PropertyType {
+  APARTMENT
+  VILLA
+  STUDIO
+  DUPLEX
+  COMMERCIAL
+  LAND
+}
+enum UnitStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+enum LeadStatus {
+  NEW
+  CONTACTED
+  VISIT
+  NEGOTIATION
+  WON
+  LOST
+}
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+model Organization {
+  id String @id @default(cuid())
+  name String
+  users User[]
+  projects Project[]
+  units Unit[]
+  media Media[]
+  leads Lead[]
+  notes LeadNote[]
+  posts Post[]
+  pages Page[]
+  testimonials Testimonial[]
+  settings Setting[]
+  subscribers NewsletterSubscriber[]
+  createdAt DateTime @default(now())
+}
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  name String?
+  image String?
+  emailVerified DateTime?
+  role Role @default(EDITOR)
+  active Boolean @default(false)
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  accounts Account[]
+  sessions Session[]
+  assignedLeads Lead[] @relation("LeadAssignee")
+  notes LeadNote[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([organizationId, role])
+}
+model Account {
+  id String @id @default(cuid())
+  userId String
+  type String
+  provider String
+  providerAccountId String
+  refresh_token String? @db.Text
+  access_token String? @db.Text
+  expires_at Int?
+  token_type String?
+  scope String?
+  id_token String? @db.Text
+  session_state String?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+model Session {
+  id String @id @default(cuid())
+  sessionToken String @unique
+  userId String
+  expires DateTime
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+model VerificationToken {
+  identifier String
+  token String @unique
+  expires DateTime
+  @@unique([identifier, token])
+}
+model Project {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  slug String @unique
+  status ProjectStatus @default(COMING_SOON)
+  publicationStatus PublicationStatus @default(DRAFT)
+  city String
+  neighborhood String
+  lat Decimal? @db.Decimal(10, 7)
+  lng Decimal? @db.Decimal(10, 7)
+  deliveryDate DateTime?
+  priceFrom Decimal? @db.Decimal(14, 2)
+  types PropertyType[]
+  amenities String[]
+  brochureUrl String?
+  featured Boolean @default(false)
+  progressPercent Int @default(0)
+  translations ProjectTranslation[]
+  units Unit[]
+  media Media[]
+  leads Lead[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([city, status])
+  @@index([publicationStatus, featured])
+  @@index([priceFrom])
+  @@index([organizationId])
+}
+model ProjectTranslation {
+  id String @id @default(cuid())
+  projectId String
+  locale Locale
+  title String
+  description Json
+  seoTitle String?
+  seoDescription String?
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  @@unique([projectId, locale])
+}
+model Unit {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  projectId String
+  reference String
+  type PropertyType
+  floor Int?
+  surface Decimal @db.Decimal(10, 2)
+  bedrooms Int?
+  bathrooms Int?
+  price Decimal? @db.Decimal(14, 2)
+  status UnitStatus @default(AVAILABLE)
+  planUrl String?
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  leads Lead[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([projectId, reference])
+  @@index([projectId, status, price])
+  @@index([type, bedrooms, surface])
+  @@index([price])
+  @@index([organizationId])
+}
+model Media {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  projectId String?
+  type MediaType
+  storageKey String @unique
+  url String
+  mimeType String
+  sizeBytes Int
+  width Int?
+  height Int?
+  order Int @default(0)
+  translations MediaTranslation[]
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  createdAt DateTime @default(now())
+  @@index([projectId, order])
+  @@index([organizationId])
+}
+model MediaTranslation {
+  id String @id @default(cuid())
+  mediaId String
+  locale Locale
+  alt String
+  media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  @@unique([mediaId, locale])
+}
+model Lead {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  name String
+  phone String
+  email String?
+  subject String
+  message String?
+  projectId String?
+  unitId String?
+  source String
+  status LeadStatus @default(NEW)
+  assignedToId String?
+  consent Boolean
+  consentAt DateTime
+  consentVersion String
+  locale Locale @default(fr)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  unit Unit? @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  assignedTo User? @relation("LeadAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  notes LeadNote[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, createdAt])
+  @@index([projectId, source])
+  @@index([assignedToId, createdAt])
+  @@index([unitId])
+  @@index([organizationId])
+}
+model LeadNote {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  leadId String
+  authorId String
+  content String
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  createdAt DateTime @default(now())
+  @@index([leadId, createdAt])
+  @@index([authorId])
+  @@index([organizationId])
+}
+model Post {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  slug String @unique
+  status PublicationStatus @default(DRAFT)
+  publishedAt DateTime?
+  cover String?
+  translations PostTranslation[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, publishedAt])
+  @@index([organizationId])
+}
+model PostTranslation {
+  id String @id @default(cuid())
+  postId String
+  locale Locale
+  title String
+  excerpt String?
+  content Json
+  seoTitle String?
+  seoDescription String?
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@unique([postId, locale])
+}
+model Page {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  slug String @unique
+  status PublicationStatus @default(DRAFT)
+  translations PageTranslation[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([organizationId])
+}
+model PageTranslation {
+  id String @id @default(cuid())
+  pageId String
+  locale Locale
+  title String
+  content Json
+  seoTitle String?
+  seoDescription String?
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  @@unique([pageId, locale])
+}
+model Testimonial {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  name String
+  published Boolean @default(false)
+  order Int @default(0)
+  translations TestimonialTranslation[]
+  createdAt DateTime @default(now())
+  @@index([organizationId, published, order])
+}
+model TestimonialTranslation {
+  id String @id @default(cuid())
+  testimonialId String
+  locale Locale
+  content String
+  testimonial Testimonial @relation(fields: [testimonialId], references: [id], onDelete: Cascade)
+  @@unique([testimonialId, locale])
+}
+model Setting {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  key String @unique
+  value Json
+  updatedAt DateTime @updatedAt
+  @@index([organizationId])
+}
+model NewsletterSubscriber {
+  id String @id @default(cuid())
+  organizationId String?
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  email String @unique
+  locale Locale
+  consentAt DateTime
+  consentVersion String
+  confirmedAt DateTime?
+  unsubscribedAt DateTime?
+  tokenHash String? @unique
+  tokenExpiresAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([organizationId])
+}
+model EmailOutbox {
+  id String @id @default(cuid())
+  kind String
+  aggregateId String
+  payload Json
+  attempts Int @default(0)
+  availableAt DateTime @default(now())
+  lockedUntil DateTime?
+  sentAt DateTime?
+  lastError String?
+  createdAt DateTime @default(now())
+  @@unique([kind, aggregateId])
+  @@index([sentAt, availableAt])
+}

@@ -1,6 +1,6 @@
 # Architecture — plateforme immobilière au Maroc
 
-Statut : proposition à valider avant toute implémentation. Dépôt inspecté le 11 octobre 2026 : vide, branche locale `work` sans commit ; la lecture Git distante réussit sans retourner de référence HEAD/main. Aucun code existant à migrer. Ce document contient un schéma de conception, pas une migration exécutée.
+Statut : lancement de l’implémentation autorisé ; phase 1 livrée. Les options recommandées servent d’hypothèses de travail, les choix métier encore ouverts seront validés avant leur phase. Dépôt inspecté le 11 octobre 2026 : vide, branche locale `work` sans commit ; la lecture Git distante réussit sans retourner de référence HEAD/main. Aucun code existant à migrer. Ce document contient un schéma de conception, pas une migration exécutée.
 
 ## 1. Périmètre et principes
 
@@ -22,7 +22,7 @@ Les montants sont en MAD, stockés en Decimal, jamais en flottants. Dates stock�
 | Traductions | Tables relationnelles par langue, next-intl pour l’interface | JSONB : flexible, mais contraintes, requêtes et validation éditoriale moins simples |
 | Contenu éditorial | Éditeur riche à format JSON structuré, rendu par liste de composants autorisés | HTML libre : import facile mais surface XSS et contrôle visuel difficiles |
 
-Les versions exactes et le gestionnaire pnpm seront épinglés en phase 1 après vérification de compatibilité Next.js/Auth.js/Prisma. TypeScript strict, Tailwind et shadcn/ui ; Zod partagé et React Hook Form côté client. Vitest et Playwright. Aucun choix ci-dessus n’est déjà installé.
+Versions de phase 1 : Node 24.19.0, pnpm 11.25.0, Next.js 16.4.0, React 19.3.0, TypeScript 5.9.3 et Prisma 6.19.3 ; versions exactes et transitives dans package.json/pnpm-lock.yaml. Prisma utilise engineType=client et l’adaptateur PostgreSQL, sans moteur de requêtes natif. Le moteur des migrations reste vérifié par Prisma. Auth.js sera ajouté et vérifié en phase 3. ESLint 9 respecte les peer dependencies actuelles de la configuration Next ; migration vers ESLint 10 à traiter lorsque les plugins la prennent en charge. Le plugin next-intl utilise l’API SWC WebAssembly via une résolution pnpm explicite, car le cache natif refuse la propriété des répertoires du cloud ; build et types validés sans suppression de contrôle d’intégrité. TypeScript strict, Tailwind et shadcn/ui ; Zod partagé et React Hook Form côté client. Vitest et Playwright. Aucun choix ci-dessus n’est déjà installé.
 
 ## 3. Deux directions visuelles à choisir
 
@@ -83,11 +83,12 @@ Les modules contiennent services, schémas Zod et requêtes. Les accès Prisma e
 
 ## 6. Schéma Prisma proposé
 
-Schéma initial à vérifier avec `prisma validate` en phase 1. Les contraintes SQL complémentaires sont détaillées après le schéma. Les modèles d’adaptateur Auth.js sont inclus.
+Schéma validé avec `prisma validate` en phase 1 ; migration initiale générée puis enrichie des contraintes CHECK et appliquée à PostgreSQL local. Les contraintes SQL complémentaires sont détaillées après le schéma. Les modèles d’adaptateur Auth.js sont inclus.
 
 ```prisma
 generator client {
   provider = "prisma-client-js"
+  engineType = "client"
 }
 datasource db {
   provider = "postgresql"
@@ -499,7 +500,7 @@ Local/cloud de développement : PostgreSQL isolé, données fictives, emails et 
 
 Variables futures : DATABASE_URL, DIRECT_DATABASE_URL, AUTH_SECRET, AUTH_GOOGLE_ID/SECRET si Google retenu, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, MEDIA_PUBLIC_URL, RESEND_API_KEY, EMAIL_FROM, LEAD_NOTIFICATION_EMAIL, NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_WHATSAPP_NUMBER, REDIS_REST_URL/TOKEN, CRON_SECRET et clés Turnstile si activé. Secrets uniquement en gestionnaire sécurisé, pas dans les documents ou le seed. Vérifier bindings existants et présence sans afficher les valeurs avant toute demande.
 
-Destinations réseau : registre npm, hébergement GitHub, hôte PostgreSQL choisi, API Resend, endpoint R2, fournisseur Redis et tuiles cartographiques retenu. Liste précise après choix des fournisseurs ; aucune modification réseau ou déclaration de secrets à ce stade. Aucun install_script/start_skill sauvegardé : aucune installation autorisée par l’étape actuelle. À la phase 1, instructions testées et sauvegardées pour réutilisation ; utiliser le checkout existant, sans nouveau worktree.
+Destinations réseau : registre npm, hébergement GitHub, hôte PostgreSQL choisi, API Resend, endpoint R2, fournisseur Redis et tuiles cartographiques retenu. Liste précise après choix des fournisseurs ; aucune modification réseau ou déclaration de secrets à ce stade. Phase 1 : scripts/setup-dev.sh installe les dépendances à lockfile figé, préserve la configuration existante, démarre PostgreSQL local, applique les migrations et ajoute le seed. Cette séquence a été réexécutée avec succès. Les instructions cloud référencent le checkout existant, sans nouveau worktree ; leur publication et la restauration dans une nouvelle tâche restent des opérations distinctes de la validation de cette instance.
 
 ## 11. Points de validation
 

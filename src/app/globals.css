@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+:root {
+  --background: #f7f4ee;
+  --foreground: #202522;
+  --primary: #244b43;
+  --primary-foreground: #ffffff;
+  --secondary: #e9e4db;
+  --border: #c7c4ba;
+  --ring: #244b43;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+}
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, sans-serif; }
+button, a { -webkit-tap-highlight-color: transparent; }
