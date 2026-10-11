@@ -2,6 +2,8 @@
 
 Plateforme de programmes immobiliers neufs au Maroc. Français, anglais et arabe (RTL). Le projet est développé phase par phase : voir [l’architecture](docs/ARCHITECTURE.md) et [la roadmap](docs/ROADMAP.md).
 
+**[Ouvrir la démo publique](https://immob-demo.vercel.app/fr/)** — application Next.js hébergée sur Vercel, avec PostgreSQL Neon, photographies, animations au défilement et maquette WebGL interactive.
+
 ## Développement
 
 Prérequis : Node **24.19.0**, pnpm **11.25.0**, Docker avec Compose. Les versions applicatives sont figées dans package.json et pnpm-lock.yaml. Le serveur PostgreSQL de développement écoute uniquement sur loopback, port 5433 ; son volume survit aux arrêts.

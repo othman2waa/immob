@@ -1,5 +1,17 @@
 # Démo publique : Vercel + PostgreSQL
 
+## Déploiement actif
+
+- URL publique : **https://immob-demo.vercel.app/fr/** ; anglais sur `/en` et arabe sur `/ar`.
+- Projet Vercel : `immob-demo` ; ressource Neon dédiée : `immob-demo-db`, offre `free_v3`, région `fra1`.
+- La base `immob_dev` contient les 3 villes, 6 projets et 40 lots fictifs. Les connexions applicative et directe sont des variables chiffrées Vercel. La configuration `.env` locale n’a pas été remplacée.
+- Vérifications publiques effectuées : trois langues et RTL, six cartes et quarante lots, redirection vers le français, image hero AVIF, headers de sécurité et `/api/health` HTTP 200 avec une requête PostgreSQL réelle.
+- Le déploiement a été effectué par CLI. La tentative de connexion automatique au dépôt GitHub a été refusée par Vercel ; les pushes Git ne déclenchent donc pas encore de déploiement Vercel. Pour l’activer, autoriser le dépôt `othman2waa/immob` dans **Vercel → immob-demo → Settings → Git**. GitHub Actions fonctionne indépendamment et passe sur le dépôt.
+
+La vérification fonctionnelle WebGL et mobile est couverte par Playwright sur le build de production local. Le navigateur de cet atelier ne fait pas confiance au certificat du proxy pour la navigation publique ; la vérification HTTPS publique a été effectuée avec le magasin de certificats système, sans désactiver TLS.
+
+## Procédure
+
 La démo utilise l’application Next.js complète, avec les trois langues, les photographies locales, les animations et la maquette WebGL. Les six projets et les quarante lots sont lus dans PostgreSQL. Le catalogue filtrable, les pages projet, l’administration et le CRM restent prévus dans la roadmap.
 
 ## Accès nécessaires
